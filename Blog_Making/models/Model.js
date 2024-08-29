@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const blogSchema = new mongoose.Schema({
   id: {
     type: Number,
-    unique: true,
+
     default: 1,
     increment: true,
   },

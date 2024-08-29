@@ -65,6 +65,23 @@ class BlogController {
         .json({ message: "Error creating blog", error: error.message });
     }
   }
+
+  static async getBlogs(req, res) {
+    try {
+      const blogs = await Blog.find().sort({ createdAt: -1 });
+
+      if (!blogs || blogs.length === 0) {
+        return res.status(404).json({ message: "No blogs found" });
+      }
+
+      return res.json({ blogs });
+    } catch (error) {
+      console.log("Error fetching blogs:", error);
+      return res
+        .status(500)
+        .json({ message: "Error fetching blogs", error: error.message });
+    }
+  }
 }
 
 module.exports = BlogController;
