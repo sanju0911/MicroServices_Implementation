@@ -4,16 +4,13 @@ const axios = require("axios");
 class BlogController {
   static async index(req, res) {
     try {
-      // Fetch all blogs
       const blogs = await Blog.find().sort({ createdAt: -1 });
 
-      // Collect user IDs
       let userIds = [];
       blogs.forEach((blog) => {
         userIds.push(blog.userId);
       });
 
-      // Fetch users based on the collected user IDs
       const response = await axios.post(`https://localhost:3000/getalluser`, {
         ids: userIds,
       });
@@ -23,12 +20,11 @@ class BlogController {
         users[user.id] = user;
       });
 
-      // Map blogs with corresponding user information
       let BlogWithUsers = await Promise.all(
         blogs.map((blog) => {
           const user = users[blog.userId];
           return {
-            ...blog.toObject(), // Use toObject() to avoid issues with Mongoose documents
+            ...blog.toObject(),
             user,
           };
         })
@@ -51,7 +47,6 @@ class BlogController {
           .json({ message: "UserId and content are required" });
       }
 
-      // Create a new blog
       const newBlog = new Blog({
         userId,
         content,
