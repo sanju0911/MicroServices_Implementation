@@ -16,14 +16,12 @@ const verifyToken = async (req, res, next) => {
       return res.status(401).json({ message: "Token not found" });
     }
 
-    // Verify the token
     const decoded = jsonwebtoken.verify(token, process.env.SECRET);
     console.log("Decoded Token:", decoded);
 
-    // Attach decoded info to the request object
     req.user = decoded;
 
-    next(); // Pass control to the next middleware
+    next();
   } catch (error) {
     console.error("Error verifying token:", error.message);
     return res.status(401).json({ message: "Invalid or expired token" });
