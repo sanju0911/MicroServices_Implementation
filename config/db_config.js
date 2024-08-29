@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 
-const dbURI = "mongodb://localhost:27017/logging";
+const dbURI = process.env.Database_URL;
 
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
