@@ -2,41 +2,6 @@ const Blog = require("../models/Model");
 const axios = require("axios");
 
 class BlogController {
-  static async index(req, res) {
-    try {
-      const blogs = await Blog.find().sort({ createdAt: -1 });
-
-      let userIds = [];
-      blogs.forEach((blog) => {
-        userIds.push(blog.userId);
-      });
-
-      const response = await axios.post(`https://localhost:3000/getalluser`, {
-        ids: userIds,
-      });
-
-      const users = {};
-      response.data.users.forEach((user) => {
-        users[user.id] = user;
-      });
-
-      let BlogWithUsers = await Promise.all(
-        blogs.map((blog) => {
-          const user = users[blog.userId];
-          return {
-            ...blog.toObject(),
-            user,
-          };
-        })
-      );
-
-      return res.json({ BlogWithUsers });
-    } catch (error) {
-      console.log("The blog fetch error is", error);
-      return res.status(500).json({ message: "Something went wrong." });
-    }
-  }
-
   static async store(req, res) {
     try {
       const { userId, content } = req.body;

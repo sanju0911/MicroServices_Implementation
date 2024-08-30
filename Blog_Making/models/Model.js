@@ -1,12 +1,6 @@
 const mongoose = require("mongoose");
 
 const blogSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-
-    default: 1,
-    increment: true,
-  },
   userId: {
     type: String,
     required: true,

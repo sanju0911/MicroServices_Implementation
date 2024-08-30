@@ -9,11 +9,7 @@ router.post("/register", userController.registerUser);
 
 router.get("/login", userController.loginUser);
 
-router.get("/getuser", Authorizationfile.verifyToken, AuthControllers.getUser);
+router.get("/getuser", AuthControllers.getUser);
 
-router.get(
-  "/getalluser",
-  Authorizationfile.verifyToken,
-  AuthControllers.getAllUsers
-);
+router.get("/getalluser", AuthControllers.getAllUsers);
 module.exports = router;
