@@ -37,7 +37,6 @@ const updateBlog = async (req, res) => {
   const userToken = req.header("x-auth-token");
 
   try {
-    // Verify the user by calling the User Service API
     const userResponse = await axios.get("http://localhost:5000/api/users/me", {
       headers: { "x-auth-token": userToken },
     });
@@ -48,7 +47,6 @@ const updateBlog = async (req, res) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // Check if the user is the owner of the blog
     if (blog.user.toString() !== userId) {
       return res.status(403).json({ message: "Unauthorized" });
     }
@@ -65,13 +63,11 @@ const updateBlog = async (req, res) => {
   }
 };
 
-// Delete a blog
 const deleteBlog = async (req, res) => {
   const { id } = req.params;
   const userToken = req.header("x-auth-token");
 
   try {
-    // Verify the user by calling the User Service API
     const userResponse = await axios.get("http://localhost:5000/api/users/me", {
       headers: { "x-auth-token": userToken },
     });
@@ -82,7 +78,6 @@ const deleteBlog = async (req, res) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // Check if the user is the owner of the blog
     if (blog.user.toString() !== userId) {
       return res.status(403).json({ message: "Unauthorized" });
     }

@@ -14,9 +14,10 @@ const registerUser = async (req, res) => {
     const user = new User({ name, email, password });
     await user.save();
 
-    const token = user.generateToken();
+    const token = user.generateToken(); // Using the generateToken method defined in the User model
     res.status(201).json({ token });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -36,13 +37,18 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = user.generateToken();
+    const token = jwt.sign(
+      { id: user._id }, // Use user._id here as it's consistent with the middleware
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     res.status(200).json({ token });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
-
 // Get all users
 const getAllUsers = async (req, res) => {
   try {
@@ -70,15 +76,19 @@ const getUserById = async (req, res) => {
 
 const getme = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ msg: "User not found" });
-    }
-    res.json(user);
+    const user = req.user;
+
+    console.log("User retrieved in getme:", user);
+
+    res.json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ msg: "Server error" });
+    console.log(err.message);
+    res.status(500).json({ msg: "Server Error" });
   }
 };
 
-module.exports = { registerUser, loginUser, getAllUsers, getUserById, getMe };
+module.exports = { registerUser, loginUser, getme, getAllUsers, getUserById };

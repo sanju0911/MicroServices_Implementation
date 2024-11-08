@@ -1,19 +1,30 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
 
-const protect = (req, res, next) => {
-  const token = req.header("x-auth-token");
+const authMiddleware = async (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
+    return res.status(401).json({ msg: "No token, authorization denied" });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.id;
+    console.log("Decoded token:", decoded);
+
+    const user = await User.findById(decoded.id);
+    console.log("User found:", user);
+
+    if (!user) {
+      return res.status(401).json({ msg: "User not found" });
+    }
+
+    req.user = user;
+
     next();
   } catch (err) {
-    res.status(401).json({ message: "Token is not valid" });
+    console.error(err.message);
+    res.status(401).json({ msg: "Token is not valid" });
   }
 };
-
-module.exports = protect;
+module.exports = authMiddleware;
